@@ -1,0 +1,48 @@
+body {
+    margin: 0;
+    padding: 0;
+}
+
+/* Top bar styling */
+#top-bar {
+    background-color: #F75139; 
+    height: 60px; 
+    display: flex;
+    align-items: center;
+    padding: 0 20px; 
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+}
+
+/* Logo styling */
+#top-bar .logo {
+    height: 40px;
+    width: auto; 
+    margin-right: 50px; 
+}
+
+/* Text styling */
+#top-bar .top-bar-text {
+    font-family: 'Inter', sans-serif; 
+    font-size: 24px; 
+    color: white; 
+}
+
+#map {
+    height: calc(100vh - 60px); 
+}
+
+.info.legend img {
+    max-width: 100%;
+}
+
+
+/* Layer control styling */
+.leaflet-control-layers-expanded {
+    color: #000000;
+    background-color: #FFBB5E;
+}
+
+.leaflet-container {
+    font-family: 'Inter', sans-serif;
+    font-size: 14px;
+}
