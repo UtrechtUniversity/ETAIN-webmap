@@ -19,7 +19,6 @@ var baseLayers = {
 var geoServerUrl = 'https://etaingeoserver.irasetain.src.surf-hosted.nl/geoserver/wms';
 var layerName1 = 'etain_maps:output_db_test_NLCH300125_nodata';
 var layerName2 = 'etain_maps:nlch_hexgrid_500m_with_counts';
-var layerName3 = 'etain_maps:nlch_squaregrid_500m_with_counts';
 
 //define wms layers
 var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
@@ -31,13 +30,6 @@ var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
 
 var wmsLayer2 = L.tileLayer.wms(geoServerUrl, {
     layers: layerName2,
-    format: 'image/png',
-    transparent: true,
-    attribution: ""
-});
-
-var wmsLayer3 = L.tileLayer.wms(geoServerUrl, {
-    layers: layerName3,
     format: 'image/png',
     transparent: true,
     attribution: ""
@@ -75,7 +67,6 @@ function addLegend(layerName,legendPosition) {
 var layersControl = L.control.layers(baseLayers, { 
     "LTE_exposure": wmsLayer1, 
     "measurementCount_hexGrid": wmsLayer2,
-    "measurementCount_squareGrid": wmsLayer3,
 }, { 
     collapsed: false,
 }).addTo(map);
@@ -136,12 +127,6 @@ map.on('click', function(e) {
                         }
                         popupContent = `LTE EMF Exposure: ${grayIndex}V/m`;
                     } else if (layerName === layerName2) {
-                        var pointCount = null;
-                        if (data && data.features && data.features.length > 0) {
-                            pointCount = data.features[0].properties.point_count;
-                        }
-                        popupContent = `Measurement Count: ${pointCount}`;
-                    } else if (layerName === layerName3) {
                         var pointCount = null;
                         if (data && data.features && data.features.length > 0) {
                             pointCount = data.features[0].properties.point_count;
