@@ -16,7 +16,7 @@ var baseLayers = {
     "Dark Tiles": darkLayer
 };
 
-var geoServerUrl = 'http://145.38.185.175:8080/geoserver/wms';
+var geoServerUrl = 'https://etaingeoserver.irasetain.src.surf-hosted.nl/geoserver/wms';
 var layerName1 = 'etain_maps:output_db_test_NLCH300125_nodata';
 var layerName2 = 'etain_maps:nlch_hexgrid_500m_with_counts';
 var layerName3 = 'etain_maps:nlch_squaregrid_500m_with_counts';
