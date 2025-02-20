@@ -16,13 +16,10 @@ var baseLayers = {
     "Dark Tiles": darkLayer
 };
 
-var geoServerUrl = 'http://localhost:8080/geoserver/wms';
-var layerName1 = 'etain_maps:output_db_test_NLCH300125';
+var geoServerUrl = 'http://145.38.185.175:8080/geoserver/wms';
+var layerName1 = 'etain_maps:output_db_test_NLCH300125_nodata';
 var layerName2 = 'etain_maps:nlch_hexgrid_500m_with_counts';
 var layerName3 = 'etain_maps:nlch_squaregrid_500m_with_counts';
-
-console.log(`Creating WMS layer: ${geoServerUrl}, layer: ${layerName1}`);
-console.log(`Creating additional WMS layer: ${geoServerUrl}, layer: ${layerName2}`);
 
 //define wms layers
 var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
@@ -46,7 +43,8 @@ var wmsLayer3 = L.tileLayer.wms(geoServerUrl, {
     attribution: ""
 });
 
-//Track active layers
+
+//track active layers
 var activeLayers = new Set();  
 map.on('layeradd', function(e) {
     activeLayers.add(e.layer);
@@ -55,11 +53,9 @@ map.on('layerremove', function(e) {
     activeLayers.delete(e.layer);
 });
 
-
 //add layers to map
 darkLayer.addTo(map);
 wmsLayer1.addTo(map); //exposure layer is on by default
-// wmsLayer2.addTo(map)
 
 function addLegend(layerName,legendPosition) {
     var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=' + layerName + '&format=image/png';
@@ -75,11 +71,11 @@ function addLegend(layerName,legendPosition) {
     legend.addTo(map);
 }
 
-// Create the layer control
+//layer control
 var layersControl = L.control.layers(baseLayers, { 
     "LTE_exposure": wmsLayer1, 
     "measurementCount_hexGrid": wmsLayer2,
-    "measurementCount_squareGrid": wmsLayer3
+    "measurementCount_squareGrid": wmsLayer3,
 }, { 
     collapsed: false,
 }).addTo(map);
@@ -102,22 +98,27 @@ function addLegend(layerName, legendPosition) {
 addLegend(layerName1, 'bottomright');
 addLegend(layerName2, 'bottomleft');
 
+
+//click function to fetch data of active layer
 map.on('click', function(e) {
     if (activeLayers.size > 0) {
         var point = map.latLngToContainerPoint(e.latlng);
-        var x = point.x;
-        var y = point.y;
+        var x = Math.round(point.x);
+        var y = Math.round(point.y);
 
-        // request data for active layer
+        //console.log("Clicked at (x, y):", x, y); DEBUG
+
+        //request data for active layer(skip basemaps)
         activeLayers.forEach(function(layer) {
-            //skip basemaps
             if (layer.options.isBasemap) {
                 return;
             }
 
             var layerName = layer.options.layers;
-            var requestUrl = `${geoServerUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&query_layers=${layerName}&INFO_FORMAT=application/json&x=${x}&y=${y}&SRS=EPSG:4326&WIDTH=${map.getSize().x}&HEIGHT=${map.getSize().y}&bbox=${map.getBounds().toBBoxString()}`;
-            
+            var bbox = map.getBounds().toBBoxString();
+
+            var requestUrl = `${geoServerUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&query_layers=${layerName}&INFO_FORMAT=application/json&x=${x}&y=${y}&SRS=EPSG:4326&WIDTH=${map.getSize().x}&HEIGHT=${map.getSize().y}&bbox=${bbox}&_=${Date.now()}`;
+
             fetch(requestUrl)
                 .then(response => {
                     if (!response.ok) {
@@ -148,7 +149,9 @@ map.on('click', function(e) {
                         popupContent = `Measurement Count: ${pointCount}`;
                     }
 
-                    // Create popup
+                    if (popupContent.includes("-3.4028234663852886e+38")) {
+                        popupContent = "No data for selected location";
+                    }
                     L.popup()
                         .setLatLng(e.latlng)
                         .setContent(popupContent)

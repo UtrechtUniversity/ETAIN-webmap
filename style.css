@@ -45,4 +45,27 @@ body {
 .leaflet-container {
     font-family: 'Inter', sans-serif;
     font-size: 14px;
+    cursor: default;
+}
+
+/* Popup on click styling */
+.leaflet-popup-content-wrapper {
+    background-color: #FFBB5E;  
+    color: #000000;           
+    font-size: 14px;             
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+}
+
+.leaflet-popup-tip {
+    background-color: #FFBB5E 
+}
+
+/* Style the close button */     
+.leaflet-container a.leaflet-popup-close-button{
+    color: #f0f0f0;          
+    font-size: 16px;
+} 
+.leaflet-container a.leaflet-popup-close-button:hover{
+    color: #F75139;          
+    font-size: 20px;
 }
