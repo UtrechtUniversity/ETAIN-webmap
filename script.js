@@ -20,29 +20,52 @@ var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wm
 var layerName1 = 'exposure_maps:output_db_test_NLCH300125_nodata';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 
+//add headers to request
+L.TileLayer.CustomWMS = L.TileLayer.WMS.extend({
+    createTile: function(coords, done) {
+        var tile = document.createElement('img');
+        var tileUrl = this.getTileUrl(coords);
+        
+        // Fetch tile with custom headers
+        fetch(tileUrl, {
+            method: 'GET',
+            headers: {
+                'Content-Type': 'text/html; charset=utf-8',
+                'Cache-Control': 'public, max-age=3600',
+                'X-Content-Type-Options': 'nosniff'
+            }
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            var url = URL.createObjectURL(blob);
+            tile.onload = function() {
+                done(null, tile);
+            };
+            tile.src = url;
+        })
+        .catch(err => {
+            done(err);
+        });
+
+        return tile;
+    }
+});
+//
+
 //define wms layers
-var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
+var wmsLayer1 = new L.TileLayer.CustomWMS(geoServerUrl, {
     layers: layerName1,
     format: 'image/png',
     transparent: true,
-    attribution: "",
-    headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600',
-        'X-Content-Type-Options': 'nosniff'
-    }
+    attribution: ""
 });
 
-var wmsLayer2 = L.tileLayer.wms(geoServerUrl, {
+
+var wmsLayer2 = L.TileLayer.CustomWMS(geoServerUrl, {
     layers: layerName2,
     format: 'image/png',
     transparent: true,
     attribution: "",
-    headers: {
-        'Content-Type': 'text/html; charset=utf-8',
-        'Cache-Control': 'public, max-age=3600',
-        'X-Content-Type-Options': 'nosniff'
-    }
 });
 
 
