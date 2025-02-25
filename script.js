@@ -25,14 +25,24 @@ var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
     layers: layerName1,
     format: 'image/png',
     transparent: true,
-    attribution: ""
+    attribution: "",
+    headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
+        'X-Content-Type-Options': 'nosniff'
+    }
 });
 
 var wmsLayer2 = L.tileLayer.wms(geoServerUrl, {
     layers: layerName2,
     format: 'image/png',
     transparent: true,
-    attribution: ""
+    attribution: "",
+    headers: {
+        'Content-Type': 'text/html; charset=utf-8',
+        'Cache-Control': 'public, max-age=3600',
+        'X-Content-Type-Options': 'nosniff'
+    }
 });
 
 
