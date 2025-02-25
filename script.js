@@ -11,7 +11,12 @@ var customIcon = L.icon({
 var map = L.map('map', {preferCanvas: true}).setView([47.559, 7.588], 12);
 
 /// GET LOCATION AND CENTER MAP
-map.locate({setView: true, maxZoom: 12});
+map.locate({
+    setView: true, 
+    maxZoom: 12,
+    enableHighAccuracy:true,
+    timeout:10000
+});
 
 map.on('locationfound', function(e) {
   L.marker(e.latlng,{ icon: customIcon }).addTo(map)
