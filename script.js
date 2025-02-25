@@ -1,4 +1,23 @@
+// load location icon
+
+var customIcon = L.icon({
+    iconUrl: 'img/location.png', // Replace with your icon URL
+    iconSize: [40, 40], // Size of the icon
+    iconAnchor: [20, 40], // Anchor point (center-bottom)
+    popupAnchor: [0, -35] // Popup position
+  });
+  
+
 var map = L.map('map', {preferCanvas: true}).setView([47.559, 7.588], 12);
+
+/// GET LOCATION AND CENTER MAP
+map.locate({setView: true, maxZoom: 12});
+
+map.on('locationfound', function(e) {
+  L.marker(e.latlng,{ icon: customIcon }).addTo(map)
+    .bindPopup("Click on a coloured part of the map to get the exposure value. ")
+    .openPopup();
+});
 
 //base layers
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -58,8 +77,14 @@ var wmsLayer1 = new L.TileLayer.CustomWMS(geoServerUrl, {
     format: 'image/png',
     transparent: true,
     attribution: ""
-});
+}).setOpacity(1);
 
+///opacity slider logic for exposure layer map
+var slider = document.getElementById("opacity-slider");
+slider.addEventListener("input", function() {
+    var opacityValue = parseFloat(slider.value);
+    wmsLayer1.setOpacity(opacityValue);  
+});
 
 var wmsLayer2 = new L.TileLayer.CustomWMS(geoServerUrl, {
     layers: layerName2,
@@ -176,7 +201,7 @@ map.on('click', function(e) {
                         .openOn(map);
                 })
                 .catch(error => {
-                    console.error('Fetch error:', error);
+                    // console.error('Fetch error:', error);
                 });
         });
     }
