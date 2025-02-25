@@ -1,4 +1,4 @@
-var map = L.map('map').setView([47.559, 7.588], 12);
+var map = L.map('map', {preferCanvas: true}).setView([47.559, 7.588], 12);
 
 //base layers
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
@@ -16,9 +16,9 @@ var baseLayers = {
     "Dark Tiles": darkLayer
 };
 
-var geoServerUrl = 'https://etaingeoserver.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'etain_maps:output_db_test_NLCH300125_nodata';
-var layerName2 = 'etain_maps:nlch_hexgrid_500m_with_counts';
+var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
+var layerName1 = 'exposure_maps:output_db_test_NLCH300125_nodata';
+var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 
 //define wms layers
 var wmsLayer1 = L.tileLayer.wms(geoServerUrl, {
