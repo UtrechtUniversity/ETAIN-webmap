@@ -1,4 +1,3 @@
-// load location icon
 
 var customIcon = L.icon({
     iconUrl: 'img/location.png', // Replace with your icon URL
@@ -6,23 +5,29 @@ var customIcon = L.icon({
     iconAnchor: [20, 40], // Anchor point (center-bottom)
     popupAnchor: [0, -35] // Popup position
   });
+
+
+var map = L.map('map', {preferCanvas: true}).setView([50.1, 16.688], 5);
+
+navigator.geolocation.getCurrentPosition(
+    function(position) {
+      var userLat = position.coords.latitude;
+      var userLng = position.coords.longitude;
   
-
-var map = L.map('map', {preferCanvas: true}).setView([47.559, 7.588], 12);
-
-/// GET LOCATION AND CENTER MAP
-map.locate({
-    setView: true, 
-    maxZoom: 12,
-    enableHighAccuracy:true,
-    timeout:10000
-});
-
-map.on('locationfound', function(e) {
-  L.marker(e.latlng,{ icon: customIcon }).addTo(map)
-    .bindPopup("Click on a coloured part of the map to get the exposure value. ")
-    .openPopup();
-});
+      // Set map view to user's location
+      map.setView([userLat, userLng], 12);
+  
+      // Add a marker for the user's location
+      L.marker([userLat, userLng], { icon: customIcon }).addTo(map)
+        .bindPopup("Click on a coloured part of the map to get the exposure value.")
+        .openPopup();
+    },
+    function(error) {
+      console.error("Error getting location:", error.message);
+    },
+    { enableHighAccuracy: true, timeout: 10000 }
+  );
+  
 
 //base layers
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
