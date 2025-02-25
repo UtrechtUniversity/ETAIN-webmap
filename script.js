@@ -25,7 +25,7 @@ navigator.geolocation.getCurrentPosition(
     function(error) {
       console.error("Error getting location:", error.message);
     },
-    { enableHighAccuracy: true, timeout: 10000 }
+    { enableHighAccuracy: false, timeout: 20000 }
   );
   
 
