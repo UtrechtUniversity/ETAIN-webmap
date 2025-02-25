@@ -61,7 +61,7 @@ var wmsLayer1 = new L.TileLayer.CustomWMS(geoServerUrl, {
 });
 
 
-var wmsLayer2 = L.TileLayer.CustomWMS(geoServerUrl, {
+var wmsLayer2 = new L.TileLayer.CustomWMS(geoServerUrl, {
     layers: layerName2,
     format: 'image/png',
     transparent: true,
