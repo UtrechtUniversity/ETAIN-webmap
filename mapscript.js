@@ -26,7 +26,7 @@ var baseLayers = {
 
 //overlay layers
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'exposure_maps:output_db_test_NLCH300125_nodata';
+var layerName1 = 'exposure_maps:LTE_RSSI_EU_26022025';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 
 //logic to add headers to request
