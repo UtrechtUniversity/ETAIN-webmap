@@ -90,8 +90,8 @@ wmsLayer1.addTo(map); //exposure layer is on by default
 
 //layer control
 var layersControl = L.control.layers(baseLayers, { 
-    "LTE_exposure": wmsLayer1, 
-    "measurementCount_hexGrid": wmsLayer2,
+    "LTE exposure": wmsLayer1, 
+    "<s>Measurement counts</s>": wmsLayer2,
 }, { 
     collapsed: false,
 }).addTo(map);
