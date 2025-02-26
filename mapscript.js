@@ -26,41 +26,41 @@ var baseLayers = {
 
 //overlay layers
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'exposure_maps:LTE_RSSI_EU_26022025';
+var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 
-//logic to add headers to request
-L.TileLayer.CustomWMS = L.TileLayer.WMS.extend({
-    createTile: function(coords, done) {
-        var tile = document.createElement('img');
-        var tileUrl = this.getTileUrl(coords);
+// //logic to add headers to request /// INACTIVE FOR NOW, CAUSES TOO MUCH SLOWDOWN ON LARGE RASTERS
+// L.TileLayer.CustomWMS = L.TileLayer.WMS.extend({
+//     createTile: function(coords, done) {
+//         var tile = document.createElement('img');
+//         var tileUrl = this.getTileUrl(coords);
         
-        fetch(tileUrl, {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'text/html; charset=utf-8',
-                'Cache-Control': 'public, max-age=3600',
-                'X-Content-Type-Options': 'nosniff'
-            }
-        })
-        .then(response => response.blob())
-        .then(blob => {
-            var url = URL.createObjectURL(blob);
-            tile.onload = function() {
-                done(null, tile);
-            };
-            tile.src = url;
-        })
-        .catch(err => {
-            done(err);
-        });
+//         fetch(tileUrl, {
+//             method: 'GET',
+//             headers: {
+//                 'Content-Type': 'text/html; charset=utf-8',
+//                 'Cache-Control': 'public, max-age=3600',
+//                 'X-Content-Type-Options': 'nosniff'
+//             }
+//         })
+//         .then(response => response.blob())
+//         .then(blob => {
+//             var url = URL.createObjectURL(blob);
+//             tile.onload = function() {
+//                 done(null, tile);
+//             };
+//             tile.src = url;
+//         })
+//         .catch(err => {
+//             done(err);
+//         });
 
-        return tile;
-    }
-});
+//         return tile;
+//     }
+// });
 
 //define wms layers
-var wmsLayer1 = new L.TileLayer.CustomWMS(geoServerUrl, {
+var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
     layers: layerName1,
     format: 'image/png',
     transparent: true,
@@ -68,7 +68,7 @@ var wmsLayer1 = new L.TileLayer.CustomWMS(geoServerUrl, {
 }).setOpacity(1);
 
 
-var wmsLayer2 = new L.TileLayer.CustomWMS(geoServerUrl, {
+var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     layers: layerName2,
     format: 'image/png',
     transparent: true,
