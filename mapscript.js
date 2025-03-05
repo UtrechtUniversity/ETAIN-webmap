@@ -1,3 +1,5 @@
+console.log(rsrp)
+
 var map = L.map('map', {preferCanvas: true}).setView([50.1, 16.688], 5);
 
 map.locate({ setView: true, maxZoom: 12, enableHighAccuracy: true, timeout: 10000 });
@@ -28,6 +30,7 @@ var baseLayers = {
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
 var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
+var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
 
 // //logic to add headers to request /// INACTIVE FOR NOW, CAUSES TOO MUCH SLOWDOWN ON LARGE RASTERS
 // L.TileLayer.CustomWMS = L.TileLayer.WMS.extend({
@@ -75,6 +78,16 @@ var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     attribution: "",
 });
 
+
+if (rsrp === true) { ///////////////////////////////////////
+    var wmsLayer3 = new L.TileLayer.WMS(geoServerUrl, {
+        layers: layerName3,
+        format: 'image/png',
+        transparent: true,
+        attribution: "",
+    }    
+)};
+
 //track active layers
 var activeLayers = new Set();  
 map.on('layeradd', function(e) {
@@ -89,12 +102,21 @@ darkLayer.addTo(map);
 wmsLayer1.addTo(map); //exposure layer is on by default
 
 //layer control
-var layersControl = L.control.layers(baseLayers, { 
-    "LTE exposure": wmsLayer1, 
-    "<s>Measurement counts</s>": wmsLayer2,
-}, { 
-    collapsed: false,
-}).addTo(map);
+if (rsrp === false) {
+    var layersControl = L.control.layers(baseLayers, { 
+        "LTE exposure": wmsLayer1, 
+        "<s>Measurement counts</s>": wmsLayer2,
+    }, { 
+        collapsed: false,
+    }).addTo(map)}
+else {
+    layersControl = L.control.layers(baseLayers, { 
+        "LTE exposure": wmsLayer1, 
+        "LTE rsrp exposure": wmsLayer3, 
+        "<s>Measurement counts</s>": wmsLayer2,
+    }, { 
+        collapsed: false,
+    }).addTo(map)};
 
 function addLegend(layerName, legendPosition) {
     var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=' + layerName + '&format=image/png';
@@ -169,6 +191,12 @@ map.on('click', function(e) {
                             pointCount = data.features[0].properties.point_count;
                         }
                         popupContent = `Measurement Count: ${pointCount}`;
+                    } else if (layerName === layerName3) {
+                        var grayIndex = null;
+                        if (data && data.features && data.features.length > 0) {
+                            grayIndex = Math.round(data.features[0].properties.GRAY_INDEX * 10) / 10;
+                        }
+                        popupContent = `LTE EMF Exposure: ${grayIndex}V/m`;
                     }
 
                     if (popupContent.includes("-3.4028234663852886e+38")) {

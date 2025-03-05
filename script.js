@@ -7,7 +7,15 @@ function checkURLParams() {
         document.getElementById('map').style.height='100vh'
         document.querySelector('.slider-container').style.top = '130px';
     }
+    if (params.get('rsrp') === 'true') {
+        var rsrp = true
+    }
+    else {
+        var rsrp = false
+    }
+    return rsrp
 }
+const rsrp = checkURLParams();
 window.onload = checkURLParams;
 
 //load custom location icon
