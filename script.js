@@ -32,3 +32,4 @@ slider.addEventListener("input", function() {
     var opacityValue = parseFloat(slider.value);
     wmsLayer1.setOpacity(opacityValue);  
 });
+

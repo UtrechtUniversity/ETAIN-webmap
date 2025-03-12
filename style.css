@@ -91,3 +91,39 @@ body {
     color: #F75139;          
     font-size: 20px;
 }
+
+.hidden {
+    display: none !important;
+}
+/* Hide layer control panel when collapsed */
+.leaflet-control-layers.collapsed {
+    display: none;
+}
+
+/* Style for the wrapper div holding the button */
+.layer-toggle-wrapper {
+    position: absolute;
+    z-index: 1000; /* Ensure it stays on top of the map */
+}
+
+/* Style for the toggle button */
+.layer-toggle-button {
+    background: #FFBB5E;
+    border:none;
+    cursor: pointer;
+    font-size: 21px;
+    font-family: 'Inter', sans-serif;
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border-radius: 6px;
+
+}
+
+.layer-toggle-button:hover {
+    background: #F75139;
+    color: white;
+}
+
+
+
+

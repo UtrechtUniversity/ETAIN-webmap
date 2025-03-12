@@ -10,6 +10,49 @@ map.on('locationfound', function(e) {
       .openPopup();
 });
 
+document.addEventListener("DOMContentLoaded", function () {
+    const layerControl = document.querySelector(".leaflet-control-layers");
+
+    // Create a separate div for the toggle button
+    const buttonWrapper = document.createElement("div");
+    buttonWrapper.classList.add("layer-toggle-wrapper");
+
+    // Create the toggle button
+    const toggleButton = document.createElement("button");
+    toggleButton.innerText = ">>";  // Initial text
+    toggleButton.classList.add("layer-toggle-button");
+
+    // Attach event listener to toggle visibility
+    toggleButton.addEventListener("click", function () {
+        // Toggle the 'collapsed' class on the layer control
+        layerControl.classList.toggle("collapsed");
+
+        // Change the button text based on the collapsed state
+        if (layerControl.classList.contains("collapsed")) {
+            toggleButton.innerText = "<<";  // Change text when collapsed
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -50}px`; // Move right when collapsed
+        } else {
+            toggleButton.innerText = ">>";  // Change text when expanded
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -215}px`; // Original position when expanded
+        }
+    });
+
+    // Append the button to the wrapper
+    buttonWrapper.appendChild(toggleButton);
+
+    // Add the wrapper to the map container or body (depending on where you want it)
+    document.body.appendChild(buttonWrapper);
+
+    // Position the button relative to the layer control
+    const controlPosition = layerControl.getBoundingClientRect();
+    buttonWrapper.style.position = "absolute";
+    buttonWrapper.style.top = `${controlPosition.top + 3}px`; // Adjust the offset as needed
+    buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -215}px`; // Initial position
+});
+
+
+
+
 //base layers
 var osmLayer = L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
