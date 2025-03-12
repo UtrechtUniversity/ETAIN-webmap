@@ -28,7 +28,7 @@ var baseLayers = {
 
 //overlay layers
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic';
+var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic2';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
 
