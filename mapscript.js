@@ -1,13 +1,18 @@
-console.log(rsrp)
+var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
-var map = L.map('map', {preferCanvas: true}).setView([50.1, 16.688], 5);
+map.locate({ setView: true, maxZoom: 12, enableHighAccuracy: true, timeout: 10000, watch: true });
 
-map.locate({ setView: true, maxZoom: 12, enableHighAccuracy: true, timeout: 10000 });
+var userMarker; // Store the marker reference
 
 map.on('locationfound', function(e) {
-    L.marker(e.latlng, { icon: customIcon }).addTo(map)
-      .bindPopup("Click on a coloured part of the map to get the exposure value.")
-      .openPopup();
+    if (!userMarker) {
+        // Create the marker for the first time
+        userMarker = L.marker(e.latlng, { icon: customIcon }).addTo(map)
+            .bindPopup("Click on a coloured part of the map to get the exposure value.");
+    } else {
+        // Update marker position on subsequent location updates
+        userMarker.setLatLng(e.latlng);
+    }
 });
 
 document.addEventListener("DOMContentLoaded", function () {
