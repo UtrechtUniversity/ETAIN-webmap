@@ -71,7 +71,7 @@ var baseLayers = {
 
 //overlay layers
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic2';
+var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic1';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
 
@@ -147,7 +147,7 @@ wmsLayer1.addTo(map); //exposure layer is on by default
 //layer control
 if (rsrp === false) {
     var layersControl = L.control.layers(baseLayers, { 
-        "LTE exposure": wmsLayer1, 
+        "4G exposure": wmsLayer1, 
         "<s>Measurement counts</s>": wmsLayer2,
     }, { 
         collapsed: false,
@@ -161,34 +161,21 @@ else {
         collapsed: false,
     }).addTo(map)};
 
-function addLegend(layerName, legendPosition) {
+function addLegend(layerName, legendPosition,legendTitle) {
     var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=' + layerName + '&format=image/png';
 
     var legend = L.control({ position: legendPosition });
     
     legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'info legend');
+        div.innerHTML += '<span class="legend-title">' + legendTitle + '</strong><br>';
         div.innerHTML += '<img src="' + legendUrl + '" alt="Legend"/>';
         return div;
     };
 
     legend.addTo(map);
 }
-//add legends
-function addLegend(layerName,legendPosition) {
-    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=' + layerName + '&format=image/png';
-
-    var legend = L.control({ position: legendPosition });
-    
-    legend.onAdd = function () {
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML += '<img src="' + legendUrl + '" alt="Legend"/>';
-        return div;
-    };
-
-    legend.addTo(map);
-}
-addLegend(layerName1, 'bottomright');
+addLegend(layerName1, 'bottomright', 'V/m');
 addLegend(layerName2, 'bottomleft');
 
 
@@ -227,7 +214,7 @@ map.on('click', function(e) {
                         if (data && data.features && data.features.length > 0) {
                             grayIndex = Math.round(data.features[0].properties.GRAY_INDEX * 10) / 10;
                         }
-                        popupContent = `LTE EMF Exposure: ${grayIndex}V/m`;
+                        popupContent = `4G EMF Exposure: ${grayIndex}V/m`;
                     } else if (layerName === layerName2) {
                         var pointCount = null;
                         if (data && data.features && data.features.length > 0) {

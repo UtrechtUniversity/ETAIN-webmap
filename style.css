@@ -37,6 +37,12 @@ body {
 .info.legend img {
     max-width: 100%;
 }
+.legend-title {
+    color: black;
+    font-weight: bold;
+    font-size: 14px;
+    text-shadow: 0px 0px 1px white;
+}
 
 /* Slider container */
 .slider-container {
