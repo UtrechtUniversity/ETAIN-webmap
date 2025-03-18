@@ -26,6 +26,7 @@ map.on('locationfound', function(e) {
 
 document.addEventListener("DOMContentLoaded", function () {
     const layerControl = document.querySelector(".leaflet-control-layers");
+    const sliderContainer = document.querySelector(".slider-container");
 
     // Create a separate div for the toggle button
     const buttonWrapper = document.createElement("div");
@@ -38,16 +39,17 @@ document.addEventListener("DOMContentLoaded", function () {
 
     // Attach event listener to toggle visibility
     toggleButton.addEventListener("click", function () {
-        // Toggle the 'collapsed' class on the layer control
+        // Toggle the 'collapsed' class on both the layer control and slider container
         layerControl.classList.toggle("collapsed");
+        sliderContainer.classList.toggle("collapsed");
 
         // Change the button text based on the collapsed state
         if (layerControl.classList.contains("collapsed")) {
             toggleButton.innerText = "<<";  // Change text when collapsed
-            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -50}px`; // Move right when collapsed
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 50}px`; // Move right when collapsed
         } else {
             toggleButton.innerText = ">>";  // Change text when expanded
-            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -215}px`; // Original position when expanded
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`; // Original position when expanded
         }
     });
 
@@ -61,9 +63,8 @@ document.addEventListener("DOMContentLoaded", function () {
     const controlPosition = layerControl.getBoundingClientRect();
     buttonWrapper.style.position = "absolute";
     buttonWrapper.style.top = `${controlPosition.top + 3}px`; // Adjust the offset as needed
-    buttonWrapper.style.left = `${controlPosition.left + controlPosition.width + -215}px`; // Initial position
+    buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`; // Initial position
 });
-
 
 
 
@@ -88,36 +89,6 @@ var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wm
 var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic1';
 var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
 var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
-
-// //logic to add headers to request /// INACTIVE FOR NOW, CAUSES TOO MUCH SLOWDOWN ON LARGE RASTERS
-// L.TileLayer.CustomWMS = L.TileLayer.WMS.extend({
-//     createTile: function(coords, done) {
-//         var tile = document.createElement('img');
-//         var tileUrl = this.getTileUrl(coords);
-        
-//         fetch(tileUrl, {
-//             method: 'GET',
-//             headers: {
-//                 'Content-Type': 'text/html; charset=utf-8',
-//                 'Cache-Control': 'public, max-age=3600',
-//                 'X-Content-Type-Options': 'nosniff'
-//             }
-//         })
-//         .then(response => response.blob())
-//         .then(blob => {
-//             var url = URL.createObjectURL(blob);
-//             tile.onload = function() {
-//                 done(null, tile);
-//             };
-//             tile.src = url;
-//         })
-//         .catch(err => {
-//             done(err);
-//         });
-
-//         return tile;
-//     }
-// });
 
 //define wms layers
 var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
@@ -176,21 +147,19 @@ else {
     }).addTo(map)};
 
 function addLegend(layerName, legendPosition,legendTitle) {
-    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&layer=' + layerName + '&format=image/png';
+    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&style=etain_raster_style_LEGEND&STRICT=false';
 
     var legend = L.control({ position: legendPosition });
     
     legend.onAdd = function () {
         var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML += '<span class="legend-title">' + legendTitle + '</strong><br>';
         div.innerHTML += '<img src="' + legendUrl + '" alt="Legend"/>';
         return div;
     };
 
     legend.addTo(map);
 }
-addLegend(layerName1, 'bottomright', 'V/m');
-addLegend(layerName2, 'bottomleft');
+addLegend(layerName1, 'bottomright');
 
 
 //click function to fetch data of active layer

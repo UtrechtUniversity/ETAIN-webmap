@@ -60,6 +60,10 @@ body {
     font-size: 14px;
     text-align: center;
 }
+.slider-container.collapsed {
+    display: none;
+}
+
 
 #opacity-slider {
     width: 180px;
