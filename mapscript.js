@@ -1,8 +1,10 @@
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
-map.locate({ setView: true, maxZoom: 12, enableHighAccuracy: true, timeout: 10000, watch: true });
+// Initiate location watch without setting the view
+map.locate({ watch: true, enableHighAccuracy: true, timeout: 10000 });
 
-var userMarker; // Store the marker reference
+var userMarker; // Variable to store the marker reference
+var initialLocationSet = false; // Flag to track if the initial location has been set
 
 map.on('locationfound', function(e) {
     if (!userMarker) {
@@ -13,7 +15,14 @@ map.on('locationfound', function(e) {
         // Update marker position on subsequent location updates
         userMarker.setLatLng(e.latlng);
     }
+
+    if (!initialLocationSet) {
+        // Set the view to the user's location only once
+        map.setView(e.latlng, 12);
+        initialLocationSet = true;
+    }
 });
+
 
 document.addEventListener("DOMContentLoaded", function () {
     const layerControl = document.querySelector(".leaflet-control-layers");
