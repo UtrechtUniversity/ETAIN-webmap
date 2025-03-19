@@ -1,69 +1,69 @@
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
-// Initiate location watch without setting the view
+
 map.locate({ watch: true, enableHighAccuracy: true, timeout: 10000 });
 
-var userMarker; // Variable to store the marker reference
-var initialLocationSet = false; // Flag to track if the initial location has been set
+var userMarker; 
+var initialLocationSet = false; 
 
 map.on('locationfound', function(e) {
     if (!userMarker) {
-        // Create the marker for the first time
+
         userMarker = L.marker(e.latlng, { icon: customIcon }).addTo(map)
             .bindPopup("Click on a coloured part of the map to get the exposure value.");
     } else {
-        // Update marker position on subsequent location updates
+
         userMarker.setLatLng(e.latlng);
     }
 
     if (!initialLocationSet) {
-        // Set the view to the user's location only once
+
         map.setView(e.latlng, 12);
         initialLocationSet = true;
     }
 });
 
 
+//layercontrol collapse button logic
 document.addEventListener("DOMContentLoaded", function () {
     const layerControl = document.querySelector(".leaflet-control-layers");
     const sliderContainer = document.querySelector(".slider-container");
 
-    // Create a separate div for the toggle button
+
     const buttonWrapper = document.createElement("div");
     buttonWrapper.classList.add("layer-toggle-wrapper");
 
-    // Create the toggle button
+
     const toggleButton = document.createElement("button");
-    toggleButton.innerText = ">>";  // Initial text
+    toggleButton.innerText = ">>";  
     toggleButton.classList.add("layer-toggle-button");
 
-    // Attach event listener to toggle visibility
+
     toggleButton.addEventListener("click", function () {
-        // Toggle the 'collapsed' class on both the layer control and slider container
         layerControl.classList.toggle("collapsed");
         sliderContainer.classList.toggle("collapsed");
 
-        // Change the button text based on the collapsed state
+
         if (layerControl.classList.contains("collapsed")) {
-            toggleButton.innerText = "<<";  // Change text when collapsed
-            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 50}px`; // Move right when collapsed
+            toggleButton.innerText = "<<";  
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 50}px`; 
         } else {
-            toggleButton.innerText = ">>";  // Change text when expanded
-            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`; // Original position when expanded
+            toggleButton.innerText = ">>";  
+            buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`;
         }
     });
 
-    // Append the button to the wrapper
+
     buttonWrapper.appendChild(toggleButton);
 
-    // Add the wrapper to the map container or body (depending on where you want it)
+
     document.body.appendChild(buttonWrapper);
 
-    // Position the button relative to the layer control
+
     const controlPosition = layerControl.getBoundingClientRect();
     buttonWrapper.style.position = "absolute";
-    buttonWrapper.style.top = `${controlPosition.top + 3}px`; // Adjust the offset as needed
-    buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`; // Initial position
+    buttonWrapper.style.top = `${controlPosition.top + 3}px`; 
+    buttonWrapper.style.left = `${controlPosition.left + controlPosition.width - 215}px`; 
 });
 
 
@@ -87,7 +87,7 @@ var baseLayers = {
 //overlay layers
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
 var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic1';
-var layerName2 = 'exposure_maps:nlch_hexgrid_500m_with_counts';
+var layerName2 = 'exposure_maps:count';
 var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
 
 //define wms layers
@@ -133,7 +133,7 @@ wmsLayer1.addTo(map); //exposure layer is on by default
 if (rsrp === false) {
     var layersControl = L.control.layers(baseLayers, { 
         "4G exposure": wmsLayer1, 
-        "<s>Measurement counts</s>": wmsLayer2,
+        "Measurement counts": wmsLayer2,
     }, { 
         collapsed: false,
     }).addTo(map)}
@@ -141,13 +141,13 @@ else {
     layersControl = L.control.layers(baseLayers, { 
         "LTE exposure": wmsLayer1, 
         "LTE rsrp exposure": wmsLayer3, 
-        "<s>Measurement counts</s>": wmsLayer2,
+        "Measurement counts": wmsLayer2,
     }, { 
         collapsed: false,
     }).addTo(map)};
 
-function addLegend(layerName, legendPosition,legendTitle) {
-    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&style=etain_raster_style_LEGEND&STRICT=false';
+function addLegend(legendName, legendPosition,legendTitle) {
+    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&style=' + legendName + '&STRICT=false';
 
     var legend = L.control({ position: legendPosition });
     
@@ -159,8 +159,8 @@ function addLegend(layerName, legendPosition,legendTitle) {
 
     legend.addTo(map);
 }
-addLegend(layerName1, 'bottomright');
-
+addLegend('etain_raster_style_LEGEND', 'bottomright');
+addLegend('pointCount_style', 'bottomright');
 
 //click function to fetch data of active layer
 map.on('click', function(e) {
@@ -195,25 +195,27 @@ map.on('click', function(e) {
                     if (layerName === layerName1) {
                         var grayIndex = null;
                         if (data && data.features && data.features.length > 0) {
-                            grayIndex = Math.round(data.features[0].properties.GRAY_INDEX * 10) / 10;
+                            grayIndex = data.features[0].properties.GRAY_INDEX
+                            console.log(grayIndex)
+                            if (grayIndex === null || grayIndex === 0) {
+                                popupContent = `No exposure data for selected location`
+                            } else {
+                                grayIndex = Math.round( grayIndex * 10) / 10;
+                                popupContent = `4G EMF Exposure: ${grayIndex}V/m`
+                            }
                         }
-                        popupContent = `4G EMF Exposure: ${grayIndex}V/m`;
                     } else if (layerName === layerName2) {
                         var pointCount = null;
                         if (data && data.features && data.features.length > 0) {
                             pointCount = data.features[0].properties.point_count;
                         }
-                        popupContent = `Measurement Count: ${pointCount}`;
+                        popupContent =  `Measurement Count: ${pointCount}`;
                     } else if (layerName === layerName3) {
                         var grayIndex = null;
                         if (data && data.features && data.features.length > 0) {
                             grayIndex = Math.round(data.features[0].properties.GRAY_INDEX * 10) / 10;
                         }
                         popupContent = `LTE EMF Exposure: ${grayIndex}V/m`;
-                    }
-
-                    if (popupContent.includes("-3.4028234663852886e+38")) {
-                        popupContent = "No data for selected location";
                     }
                     L.popup()
                         .setLatLng(e.latlng)
