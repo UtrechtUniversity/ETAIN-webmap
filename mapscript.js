@@ -116,14 +116,61 @@ if (rsrp === true) { ///////////////////////////////////////
     }    
 )};
 
-//track active layers
-var activeLayers = new Set();  
+/////////////////////
+// track active layers
+var activeLayers = new Set();
+var layerName2 = 'exposure_maps:count';
+
+//////// LEGEND LOGIC
 map.on('layeradd', function(e) {
     activeLayers.add(e.layer);
+    if (e.layer.options && e.layer.options.layers === layerName2) {
+        addLegend('pointCount_style', 'bottomright');
+    }
 });
+
 map.on('layerremove', function(e) {
     activeLayers.delete(e.layer);
+    if (e.layer.options && e.layer.options.layers === layerName2) {
+        removeLegend('pointCount_style');
+    }
 });
+
+function addLegend(legendName, legendPosition, legendTitle) {
+    // check if legend already exists
+    if (document.querySelector('.legend-' + legendName)) {
+        return; //dont add again
+    }
+    
+    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&style=' + legendName + '&STRICT=false';
+
+    var legend = L.control({ position: legendPosition });
+    
+    legend.onAdd = function () {
+        var div = L.DomUtil.create('div', 'info legend legend-' + legendName);
+        if (legendTitle) {
+            div.innerHTML += '<h4>' + legendTitle + '</h4>';
+        }
+        div.innerHTML += '<img src="' + legendUrl + '" alt="Legend"/>';
+        return div;
+    };
+
+    legend.addTo(map);
+    legend._legendName = legendName;
+    map._legends = map._legends || {};
+    map._legends[legendName] = legend;
+}
+
+function removeLegend(legendName) {
+    if (map._legends && map._legends[legendName]) {
+        map.removeControl(map._legends[legendName]);
+        delete map._legends[legendName];
+    }
+}
+
+addLegend('etain_raster_style_LEGEND', 'bottomright');
+
+////////////////////
 
 //add layers to map
 darkLayer.addTo(map);
@@ -145,22 +192,6 @@ else {
     }, { 
         collapsed: false,
     }).addTo(map)};
-
-function addLegend(legendName, legendPosition,legendTitle) {
-    var legendUrl = geoServerUrl + '?service=WMS&version=1.3.0&request=GetLegendGraphic&format=image/png&style=' + legendName + '&STRICT=false';
-
-    var legend = L.control({ position: legendPosition });
-    
-    legend.onAdd = function () {
-        var div = L.DomUtil.create('div', 'info legend');
-        div.innerHTML += '<img src="' + legendUrl + '" alt="Legend"/>';
-        return div;
-    };
-
-    legend.addTo(map);
-}
-addLegend('etain_raster_style_LEGEND', 'bottomright');
-addLegend('pointCount_style', 'bottomright');
 
 //click function to fetch data of active layer
 map.on('click', function(e) {
