@@ -64,9 +64,21 @@ body {
     display: none;
 }
 
-
 #opacity-slider {
     width: 180px;
+}
+
+#date {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    background-color: rgba(0, 0, 0, 0.5); 
+    color: white;
+    padding: 6px 10px;
+    font-size: 14px;
+    border-radius: 4px;
+    pointer-events: none; 
+    z-index:10000;
 }
 /* Layer control styling */
 .leaflet-control-layers-expanded {

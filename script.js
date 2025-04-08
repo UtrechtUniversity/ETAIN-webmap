@@ -33,3 +33,27 @@ slider.addEventListener("input", function() {
     wmsLayer1.setOpacity(opacityValue);  
 });
 
+async function fetchGeoJsonDate() {
+    const url = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/exposure_maps/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=exposure_maps%3Ametadata&maxFeatures=50&outputFormat=application%2Fjson';
+  
+    try {
+      const response = await fetch(url);
+      const data = await response.json();
+  
+      if (data.features && data.features.length > 0) {
+        const date = data.features[0].properties.date;
+        console.log('Date:', date);
+        return date; // Use this wherever needed on your site
+      } else {
+        console.error('No features found in the GeoJSON');
+      }
+    } catch (error) {
+      console.error('Error fetching GeoJSON:', error);
+    }
+  }
+  
+
+fetchGeoJsonDate().then(date => {
+
+document.getElementById('date').textContent = `Updated on ${date}; maps updated weekly on Monday or Tuesday`;
+});
