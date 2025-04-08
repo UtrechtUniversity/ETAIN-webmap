@@ -55,5 +55,5 @@ async function fetchGeoJsonDate() {
 
 fetchGeoJsonDate().then(date => {
 
-document.getElementById('date').textContent = `Updated on ${date}; maps updated weekly on Monday or Tuesday`;
+document.getElementById('date').innerHTML = `Maps updated weekly; <br> Last update ${date}`;
 });

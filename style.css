@@ -75,7 +75,7 @@ body {
     background-color: rgba(0, 0, 0, 0.5); 
     color: white;
     padding: 6px 10px;
-    font-size: 14px;
+    font-size:11px;
     border-radius: 4px;
     pointer-events: none; 
     z-index:10000;
