@@ -57,3 +57,4 @@ fetchGeoJsonDate().then(date => {
 
 document.getElementById('date').innerHTML = `Maps updated weekly; <br> Last update ${date}`;
 });
+
