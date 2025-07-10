@@ -1,6 +1,6 @@
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
-
+//locationmarker functionality
 map.locate({ watch: true, enableHighAccuracy: true, timeout: 10000 });
 
 var userMarker; 
@@ -88,7 +88,6 @@ var baseLayers = {
 var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
 var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic1';
 var layerName2 = 'exposure_maps:count';
-var layerName3 = 'exposure_maps:lte_rsrp_eu_mosaic';
 
 //define wms layers
 var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
@@ -105,16 +104,6 @@ var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     transparent: true,
     attribution: "",
 });
-
-
-if (rsrp === true) { ///////////////////////////////////////
-    var wmsLayer3 = new L.TileLayer.WMS(geoServerUrl, {
-        layers: layerName3,
-        format: 'image/png',
-        transparent: true,
-        attribution: "",
-    }    
-)};
 
 /////////////////////
 // track active layers
@@ -199,8 +188,6 @@ map.on('click', function(e) {
         var point = map.latLngToContainerPoint(e.latlng);
         var x = Math.round(point.x);
         var y = Math.round(point.y);
-
-        // console.log("Clicked at (x, y):", x, y); DEBUG
 
         //request data for active layer(skip basemaps)
         activeLayers.forEach(function(layer) {
