@@ -85,8 +85,8 @@ var baseLayers = {
 };
 
 //overlay layers
-var geoServerUrl = 'https://geoserver2.irasetain.src.surf-hosted.nl/geoserver/wms';
-var layerName1 = 'exposure_maps:lte_rssi_eu_mosaic1';
+var geoServerUrl = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/wms';
+var layerName1 = ' exposure_maps:lte_eu_mosaic';
 var layerName2 = 'exposure_maps:count';
 
 //define wms layers
@@ -108,7 +108,6 @@ var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
 /////////////////////
 // track active layers
 var activeLayers = new Set();
-var layerName2 = 'exposure_maps:count';
 
 //////// LEGEND LOGIC
 map.on('layeradd', function(e) {
@@ -166,21 +165,13 @@ darkLayer.addTo(map);
 wmsLayer1.addTo(map); //exposure layer is on by default
 
 //layer control
-if (rsrp === false) {
-    var layersControl = L.control.layers(baseLayers, { 
-        "4G exposure": wmsLayer1, 
-        "Measurement counts": wmsLayer2,
-    }, { 
-        collapsed: false,
-    }).addTo(map)}
-else {
-    layersControl = L.control.layers(baseLayers, { 
-        "LTE exposure": wmsLayer1, 
-        "LTE rsrp exposure": wmsLayer3, 
-        "Measurement counts": wmsLayer2,
-    }, { 
-        collapsed: false,
-    }).addTo(map)};
+var layersControl = L.control.layers(baseLayers, { 
+    "4G exposure": wmsLayer1, 
+    "Measurement counts": wmsLayer2,
+}, { 
+    collapsed: false,
+}).addTo(map)
+
 
 //click function to fetch data of active layer
 map.on('click', function(e) {
