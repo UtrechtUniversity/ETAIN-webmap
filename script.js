@@ -43,7 +43,7 @@ async function fetchGeoJsonDate() {
       if (data.features && data.features.length > 0) {
         const date = data.features[0].properties.date;
         console.log('Date:', date);
-        return date; // Use this wherever needed on your site
+        return date; 
       } else {
         console.error('No features found in the GeoJSON');
       }

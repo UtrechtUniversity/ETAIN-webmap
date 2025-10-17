@@ -177,6 +177,7 @@ var layersControl = L.control.layers(baseLayers, {
 map.on('click', function(e) {
     if (activeLayers.size > 0) {
         var point = map.latLngToContainerPoint(e.latlng);
+        console.log(point)
         var x = Math.round(point.x);
         var y = Math.round(point.y);
 
@@ -188,6 +189,7 @@ map.on('click', function(e) {
 
             var layerName = layer.options.layers;
             var bbox = map.getBounds().toBBoxString();
+            console.log(bbox)
 
             var requestUrl = `${geoServerUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&query_layers=${layerName}&INFO_FORMAT=application/json&x=${x}&y=${y}&SRS=EPSG:4326&WIDTH=${map.getSize().x}&HEIGHT=${map.getSize().y}&bbox=${bbox}&_=${Date.now()}`;
 
