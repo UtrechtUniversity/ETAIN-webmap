@@ -10,10 +10,10 @@ locateControl.onAdd = function(map) {
     L.DomEvent.disableScrollPropagation(div);
 
     //retrigger location function on click
-    L.DomEvent.on(div, 'click touchstart', function(e) {
+    L.DomEvent.on(div, 'click touchstart touchend pointerdown pointerup', function(e) {
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
-        map.locate({ watch:false });
+        map.locate({ watch:false, enableHighAccuracy: true});
     });
 
     return div;
