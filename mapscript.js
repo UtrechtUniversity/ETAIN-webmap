@@ -18,7 +18,7 @@ locateControl.onAdd = function(map) {
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
         if (initialLocation) {
-            map.setView(initialLocation, 12); // fixed zoom
+            map.setView(initialLocation,12,{animate: false}); // fixed zoom
         }
     });
 
@@ -33,7 +33,7 @@ map.on('locationfound', function(e) {
     // store initial location
     if (!initialLocation) {
         initialLocation = e.latlng;
-        map.setView(initialLocation, 12);
+        map.setView(initialLocation, 12,{animate: false});
     }
 
     if (!userMarker) {
