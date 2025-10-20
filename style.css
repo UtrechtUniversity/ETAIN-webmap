@@ -146,6 +146,17 @@ body {
     color: white;
 }
 
-
+.leaflet-control-custom.locate-btn {
+    background-color: white;
+    background-image: url('https://cdn-icons-png.flaticon.com/512/684/684908.png');
+    background-size: 20px 20px;
+    background-repeat: no-repeat;
+    background-position: center;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    border: none;
+    filter:grayscale(100%)
+}
 
 

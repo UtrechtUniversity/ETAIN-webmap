@@ -7,13 +7,6 @@ function checkURLParams() {
         document.getElementById('map').style.height='100vh'
         document.querySelector('.slider-container').style.top = '130px';
     }
-    if (params.get('rsrp') === 'true') {
-        var rsrp = true
-    }
-    else {
-        var rsrp = false
-    }
-    return rsrp
 }
 const rsrp = checkURLParams();
 window.onload = checkURLParams;
@@ -33,6 +26,8 @@ slider.addEventListener("input", function() {
     wmsLayer1.setOpacity(opacityValue);  
 });
 
+
+// fetch date from "metadata" layer and add to viewer
 async function fetchGeoJsonDate() {
     const url = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/exposure_maps/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=exposure_maps%3Ametadata&maxFeatures=50&outputFormat=application%2Fjson';
   

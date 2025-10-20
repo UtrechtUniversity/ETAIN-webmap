@@ -1,11 +1,28 @@
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
+// return to location button
+var locateControl = L.control({ position: 'topleft' });
+
+locateControl.onAdd = function(map) {
+    var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom locate-btn');
+    //prevent map clicks when pressing the button
+    L.DomEvent.disableClickPropagation(div);
+    L.DomEvent.disableScrollPropagation(div);
+
+    //retrigger location function on click
+    div.onclick = function() {
+        map.locate({ watch:false });
+    };
+
+    return div;
+};
+locateControl.addTo(map);
+
 //locationmarker functionality
 map.locate({ watch: true, enableHighAccuracy: true, timeout: 10000 });
-
 var userMarker; 
 var initialLocationSet = false; 
-
+var returnLocationSet = false;
 map.on('locationfound', function(e) {
     if (!userMarker) {
 
@@ -15,12 +32,8 @@ map.on('locationfound', function(e) {
 
         userMarker.setLatLng(e.latlng);
     }
-
-    if (!initialLocationSet) {
-
-        map.setView(e.latlng, 12);
-        initialLocationSet = true;
-    }
+    map.setView(e.latlng, 12);
+    map.stopLocate()
 });
 
 
@@ -96,7 +109,6 @@ var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
     transparent: true,
     attribution: ""
 }).setOpacity(1);
-
 
 var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     layers: layerName2,
@@ -177,7 +189,6 @@ var layersControl = L.control.layers(baseLayers, {
 map.on('click', function(e) {
     if (activeLayers.size > 0) {
         var point = map.latLngToContainerPoint(e.latlng);
-        console.log(point)
         var x = Math.round(point.x);
         var y = Math.round(point.y);
 
