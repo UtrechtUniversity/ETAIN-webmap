@@ -1,43 +1,49 @@
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
-// return to location button
+var initialLocation = null; // store the first location
+var userMarker;
+
+// Button control
 var locateControl = L.control({ position: 'topleft' });
 
 locateControl.onAdd = function(map) {
     var div = L.DomUtil.create('div', 'leaflet-bar leaflet-control leaflet-control-custom locate-btn');
-    //prevent map clicks when pressing the button
+
+    // prevent map clicks when pressing the button
     L.DomEvent.disableClickPropagation(div);
     L.DomEvent.disableScrollPropagation(div);
 
-    //retrigger location function on click
-    L.DomEvent.on(div, 'click touchstart touchend pointerdown pointerup', function(e) {
+    // click/touch: recenter map to initial location
+    L.DomEvent.on(div, 'click touchstart', function(e) {
         L.DomEvent.stopPropagation(e);
         L.DomEvent.preventDefault(e);
-        map.locate({ watch:false, enableHighAccuracy: true});
+        if (initialLocation) {
+            map.setView(initialLocation, 12); // fixed zoom
+        }
     });
 
     return div;
 };
 locateControl.addTo(map);
 
-//locationmarker functionality
+// Track user location continuously
 map.locate({ watch: true, enableHighAccuracy: true, timeout: 10000 });
-var userMarker; 
-var initialLocationSet = false; 
-var returnLocationSet = false;
-map.on('locationfound', function(e) {
-    if (!userMarker) {
 
-        userMarker = L.marker(e.latlng, { icon: customIcon }).addTo(map)
+map.on('locationfound', function(e) {
+    // store initial location
+    if (!initialLocation) {
+        initialLocation = e.latlng;
+        map.setView(initialLocation, 12);
+    }
+
+    if (!userMarker) {
+        userMarker = L.marker(e.latlng, { icon: customIcon })
+            .addTo(map)
             .bindPopup("Click on a coloured part of the map to get the exposure value.");
     } else {
-
         userMarker.setLatLng(e.latlng);
     }
-    map.setView(e.latlng, 12);
-    map.stopLocate()
 });
-
 
 //layercontrol collapse button logic
 document.addEventListener("DOMContentLoaded", function () {
