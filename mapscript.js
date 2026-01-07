@@ -106,7 +106,7 @@ var baseLayers = {
 };
 
 //overlay layers
-var geoServerUrl = 'https://etainmaps.uu.nl/geoserver/wms';
+var geoServerUrl = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/wms';
 var layerName1 = ' exposure_maps:lte_eu_mosaic';
 var layerName2 = 'exposure_maps:count';
 
