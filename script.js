@@ -29,7 +29,7 @@ slider.addEventListener("input", function() {
 
 // fetch date from "metadata" layer and add to viewer
 async function fetchGeoJsonDate() {
-    const url = 'https://etainmaps.uu.nl/geoserver/exposure_maps/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=exposure_maps%3Ametadata&maxFeatures=50&outputFormat=application%2Fjson';
+    const url = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/exposure_maps/ows?service=WFS&version=1.0.0&request=GetFeature&typeName=exposure_maps%3Ametadata&maxFeatures=50&outputFormat=application%2Fjson';
   
     try {
       const response = await fetch(url);
