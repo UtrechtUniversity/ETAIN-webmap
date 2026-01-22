@@ -1,3 +1,7 @@
+// 5G PARAM CHECKER
+const params = new URLSearchParams(window.location.search);
+const show5G = params.get('5G') === 'true';
+
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
 var initialLocation = null; // store the first location
@@ -109,6 +113,7 @@ var baseLayers = {
 var geoServerUrl = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/wms';
 var layerName1 = ' exposure_maps:lte_eu_mosaic';
 var layerName2 = 'exposure_maps:count';
+var layerName3 = 'exposure_maps:ssRsrp_mosaic';
 
 //define wms layers
 var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
@@ -125,6 +130,12 @@ var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     attribution: "",
 });
 
+var wmsLayer3 = new L.TileLayer.WMS(geoServerUrl, {
+    layers: layerName3,
+    format: 'image/png',
+    transparent: true,
+    attribution: "",
+});
 /////////////////////
 // track active layers
 var activeLayers = new Set();
@@ -191,6 +202,13 @@ var layersControl = L.control.layers(baseLayers, {
 }, { 
     collapsed: false,
 }).addTo(map)
+
+if (show5G) {
+    layersControl.addOverlay(wmsLayer3, "5G exposure");
+
+    // optional: turn it on by default
+    // wmsLayer3.addTo(map);
+}
 
 
 //click function to fetch data of active layer
