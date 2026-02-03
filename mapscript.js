@@ -1,7 +1,3 @@
-// 5G PARAM CHECKER
-const params = new URLSearchParams(window.location.search);
-const show5G = params.get('5G') === 'true';
-
 var map = L.map('map', { preferCanvas: true }).setView([50.1, 16.688], 5);
 
 var initialLocation = null; // store the first location
@@ -111,9 +107,8 @@ var baseLayers = {
 
 //overlay layers
 var geoServerUrl = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/wms';
-var layerName1 = ' exposure_maps:lte_eu_mosaic';
+var layerName1 = 'exposure_maps:ssRsrp_mosaic';
 var layerName2 = 'exposure_maps:count';
-var layerName3 = 'exposure_maps:ssRsrp_mosaic';
 
 //define wms layers
 var wmsLayer1 = new L.TileLayer.WMS(geoServerUrl, {
@@ -130,12 +125,6 @@ var wmsLayer2 = new L.TileLayer.WMS(geoServerUrl, {
     attribution: "",
 });
 
-var wmsLayer3 = new L.TileLayer.WMS(geoServerUrl, {
-    layers: layerName3,
-    format: 'image/png',
-    transparent: true,
-    attribution: "",
-});
 /////////////////////
 // track active layers
 var activeLayers = new Set();
@@ -197,18 +186,11 @@ wmsLayer1.addTo(map); //exposure layer is on by default
 
 //layer control
 var layersControl = L.control.layers(baseLayers, { 
-    "4G exposure": wmsLayer1, 
+    "5G + 4G exposure": wmsLayer1, 
     "Measurement counts": wmsLayer2,
 }, { 
     collapsed: false,
 }).addTo(map)
-
-if (show5G) {
-    layersControl.addOverlay(wmsLayer3, "5G exposure");
-
-    // optional: turn it on by default
-    // wmsLayer3.addTo(map);
-}
 
 
 //click function to fetch data of active layer
@@ -249,7 +231,7 @@ map.on('click', function(e) {
                                 popupContent = `No exposure data for selected location`
                             } else {
                                 grayIndex = Math.round( grayIndex * 10) / 10;
-                                popupContent = `4G EMF Exposure: ${grayIndex}V/m`
+                                popupContent = `5G + 4G EMF Exposure: ${grayIndex}V/m`
                             }
                         }
                     } else if (layerName === layerName2) {
@@ -258,12 +240,6 @@ map.on('click', function(e) {
                             pointCount = data.features[0].properties.point_count;
                         }
                         popupContent =  `Measurement Count: ${pointCount}`;
-                    } else if (layerName === layerName3) {
-                        var grayIndex = null;
-                        if (data && data.features && data.features.length > 0) {
-                            grayIndex = Math.round(data.features[0].properties.GRAY_INDEX * 10) / 10;
-                        }
-                        popupContent = `LTE EMF Exposure: ${grayIndex}V/m`;
                     }
                     L.popup()
                         .setLatLng(e.latlng)
