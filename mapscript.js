@@ -106,7 +106,7 @@ var baseLayers = {
 };
 
 //overlay layers
-var geoServerUrl = 'https://geoserver-dgk-prd-etain.apps.cl01.cp.its.uu.nl/geoserver/wms';
+var geoServerUrl = 'https://etainmaps.uu.nl/geoserver/wms';
 var layerName1 = 'exposure_maps:ssRsrp_mosaic';
 var layerName2 = 'exposure_maps:count';
 
@@ -208,9 +208,8 @@ map.on('click', function(e) {
 
             var layerName = layer.options.layers;
             var bbox = map.getBounds().toBBoxString();
-            console.log(bbox)
 
-            var requestUrl = `${geoServerUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&query_layers=${layerName}&INFO_FORMAT=application/json&x=${x}&y=${y}&SRS=EPSG:4326&WIDTH=${map.getSize().x}&HEIGHT=${map.getSize().y}&bbox=${bbox}&_=${Date.now()}`;
+            var requestUrl = `${geoServerUrl}?service=WMS&version=1.1.1&request=GetFeatureInfo&layers=${layerName}&query_layers=${layerName}&INFO_FORMAT=application/json&x=${x}&y=${y}&SRS=EPSG:4326&WIDTH=${map.getSize().x}&HEIGHT=${map.getSize().y}&bbox=${bbox}`;
 
             fetch(requestUrl)
                 .then(response => {
